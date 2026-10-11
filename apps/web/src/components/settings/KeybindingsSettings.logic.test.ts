@@ -7,6 +7,7 @@ import {
   buildKeybindingCommandOptions,
   buildWhenVariableOptions,
   commandLabel,
+  filterKeybindingCommandOptions,
   groupKeybindingRows,
   keybindingConflictLabels,
   keybindingFromKeyboardEvent,
@@ -99,6 +100,18 @@ describe("KeybindingsSettings.logic", () => {
         buildKeybindingCommandOptions(bindings).filter((command) => command.startsWith("usage.")),
       ).toEqual(expected);
     }
+  });
+
+  it("filters the add-binding command list by label or command id", () => {
+    const options = buildKeybindingCommandOptions(DEFAULT_RESOLVED_KEYBINDINGS);
+    expect(filterKeybindingCommandOptions(options, "  ")).toBe(options);
+    expect(filterKeybindingCommandOptions(options, "Opposite Queue")).toEqual([
+      "composer.sendAlternate",
+    ]);
+    expect(filterKeybindingCommandOptions(options, "composer.sendalternate")).toEqual([
+      "composer.sendAlternate",
+    ]);
+    expect(filterKeybindingCommandOptions(options, "no such command")).toEqual([]);
   });
 
   it("builds searchable rows with readable key and when values", () => {

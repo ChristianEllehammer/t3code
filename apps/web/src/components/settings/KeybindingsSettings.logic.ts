@@ -358,6 +358,20 @@ export function buildKeybindingCommandOptions(
   return [...commands].toSorted((left, right) => compareCommands(left, right, commandLabel));
 }
 
+/** Narrows the add-binding command list by label or command id. */
+export function filterKeybindingCommandOptions(
+  options: ReadonlyArray<KeybindingCommandOption>,
+  query: string,
+): ReadonlyArray<KeybindingCommandOption> {
+  const normalizedQuery = query.trim().toLowerCase();
+  if (normalizedQuery.length === 0) return options;
+  return options.filter(
+    (command) =>
+      commandLabel(command).toLowerCase().includes(normalizedQuery) ||
+      command.toLowerCase().includes(normalizedQuery),
+  );
+}
+
 export function commandLabel(command: KeybindingCommand): string {
   if (command === "composer.sendAlternate") return "Composer: Opposite Queue or Steer Action";
   if (command === "composer.sendBackground") return "Composer: Start in Background";
